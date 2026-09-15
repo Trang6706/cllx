@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Khám phá con lắc lò xo</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f5f7fb;color:#1f2937}
+  .wrap{max-width:1100px;margin:auto;padding:24px}
+  h1{margin:0 0 8px;text-align:center;font-size:30px}
+  .subtitle{text-align:center;color:#64748b;margin-bottom:22px}
+  .grid{display:grid;grid-template-columns:1.55fr .85fr;gap:18px}
+  .card{background:white;border-radius:16px;padding:18px;box-shadow:0 5px 18px rgba(15,23,42,.08)}
+  canvas{width:100%;display:block;border-radius:12px;background:#fbfdff}
+  .controls{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:16px}
+  label{font-weight:700;font-size:14px}
+  input[type=range]{width:100%;margin-top:8px}
+  .value{font-weight:700;margin-left:6px}
+  .buttons{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+  button{border:0;border-radius:10px;padding:10px 16px;font-weight:700;cursor:pointer;background:#e2e8f0}
+  button:hover{filter:brightness(.97)}
+  .primary{background:#2563eb;color:white}
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+  .stat{background:#f8fafc;border-radius:10px;padding:12px}
+  .stat small{display:block;color:#64748b;margin-bottom:5px}
+  .stat b{font-size:18px}
+  .formula{margin-top:14px;padding:14px;border-radius:10px;background:#eff6ff;text-align:center;font-size:18px}
+  .questions{margin-top:20px}
+  .questions h2{font-size:20px;margin-top:0}
+  .questions li{margin:12px 0;line-height:1.45}
+  .note{font-size:13px;color:#64748b;line-height:1.45}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:#475569;margin-top:10px}
+  .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px}
+  @media(max-width:800px){.grid{grid-template-columns:1fr}.controls{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🌀 KHÁM PHÁ CON LẮC LÒ XO</h1>
+  <div class="subtitle">Mô phỏng dao động điều hòa của con lắc lò xo</div>
+
+  <div class="grid">
+    <section class="card">
+      <canvas id="sim" width="760" height="330"></canvas>
+
+      <div class="controls">
+        <div>
+          <label>Khối lượng m <span class="value" id="mVal">0.50 kg</span></label>
+          <input id="m" type="range" min="0.20" max="1.50" step="0.05" value="0.50">
+        </div>
+        <div>
+          <label>Độ cứng k <span class="value" id="kVal">20 N/m</span></label>
+          <input id="k" type="range" min="5" max="50" step="1" value="20">
+        </div>
+        <div>
+          <label>Biên độ A <span class="value" id="aVal">0.15 m</span></label>
+          <input id="amp" type="range" min="0.05" max="0.25" step="0.01" value="0.15">
+        </div>
+      </div>
+
+      <div class="buttons">
+        <button class="primary" id="start">▶ Chạy</button>
+        <button id="pause">⏸ Tạm dừng</button>
+        <button id="reset">↺ Đặt lại</button>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><small>Li độ x</small><b id="xOut">0.150 m</b></div>
+        <div class="stat"><small>Vận tốc v</small><b id="vOut">0.000 m/s</b></div>
+        <div class="stat"><small>Gia tốc a</small><b id="accOut">-6.000 m/s²</b></div>
+        <div class="stat"><small>Chu kì T</small><b id="tOut">0.993 s</b></div>
+      </div>
+
+      <div class="formula">
+        <b>T = 2π√(m/k)</b>
+        <span class="note"> &nbsp; | &nbsp; x(t) = A cos(ωt), &nbsp; ω = √(k/m)</span>
+      </div>
+
+      <div class="legend">
+        <span><span class="dot" style="background:#2563eb"></span>Vị trí cân bằng</span>
+        <span><span class="dot" style="background:#64748b"></span>Vật dao động</span>
+      </div>
+    </section>
+
+    <aside class="card questions">
+      <h2>🔍 Câu hỏi dẫn dắt</h2>
+      <ol>
+        <li>Khi vật đi từ vị trí biên về vị trí cân bằng, vận tốc của vật thay đổi như thế nào?</li>
+        <li>Ở vị trí nào vận tốc có độ lớn lớn nhất? Ở vị trí nào gia tốc có độ lớn lớn nhất?</li>
+        <li>Khi tăng độ cứng <b>k</b> của lò xo và giữ nguyên khối lượng <b>m</b>, chu kì dao động thay đổi như thế nào?</li>
+      </ol>
+
+      <h2>🎯 Mục tiêu năng lực</h2>
+      <ul>
+        <li><b>Nhận thức vật lí:</b> Mô tả được sự biến đổi của li độ, vận tốc và gia tốc trong dao động của con lắc lò xo.</li>
+        <li><b>Tìm hiểu tự nhiên dưới góc độ vật lí:</b> Khai thác mô phỏng để khảo sát ảnh hưởng của m và k đến chu kì dao động.</li>
+      </ul>
+
+      <h2>💡 Gợi ý khám phá</h2>
+      <p class="note">Giữ hai đại lượng không đổi và chỉ thay đổi một đại lượng còn lại. Hãy quan sát chuyển động và số liệu trước khi đưa ra kết luận.</p>
+    </aside>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('sim');
+const ctx = canvas.getContext('2d');
+
+const mSlider = document.getElementById('m');
+const kSlider = document.getElementById('k');
+const aSlider = document.getElementById('amp');
+
+const mVal = document.getElementById('mVal');
+const kVal = document.getElementById('kVal');
+const aVal = document.getElementById('aVal');
+
+const xOut = document.getElementById('xOut');
+const vOut = document.getElementById('vOut');
+const accOut = document.getElementById('accOut');
+const tOut = document.getElementById('tOut');
+
+let running = false;
+let t = 0;
+let last = performance.now();
+
+function params(){
+  const m = +mSlider.value;
+  const k = +kSlider.value;
+  const A = +aSlider.value;
+  const omega = Math.sqrt(k/m);
+  const T = 2*Math.PI/omega;
+  return {m,k,A,omega,T};
+}
+
+function updateLabels(){
+  const p=params();
+  mVal.textContent=p.m.toFixed(2)+" kg";
+  kVal.textContent=p.k.toFixed(0)+" N/m";
+  aVal.textContent=p.A.toFixed(2)+" m";
+  tOut.textContent=p.T.toFixed(3)+" s";
+}
+
+function drawSpring(x1,x2,y){
+  const coils=16, amp=12, lead=18;
+  ctx.beginPath();
+  ctx.moveTo(x1,y);
+  ctx.lineTo(x1+lead,y);
+  const start=x1+lead, end=x2-lead;
+  for(let i=0;i<=coils;i++){
+    const x=start+(end-start)*i/coils;
+    const yy=y+(i===0||i===coils?0:(i%2? -amp:amp));
+    ctx.lineTo(x,yy);
+  }
+  ctx.lineTo(x2-lead,y);
+  ctx.lineTo(x2,y);
+  ctx.stroke();
+}
+
+function draw(){
+  const p=params();
+  const x = p.A*Math.cos(p.omega*t);
+  const v = -p.A*p.omega*Math.sin(p.omega*t);
+  const acc = -p.omega*p.omega*x;
+
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  // floor
+  ctx.strokeStyle="#cbd5e1";
+  ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(40,250); ctx.lineTo(720,250); ctx.stroke();
+
+  // wall
+  ctx.strokeStyle="#475569";
+  ctx.lineWidth=5;
+  ctx.beginPath(); ctx.moveTo(90,65); ctx.lineTo(90,250); ctx.stroke();
+  ctx.lineWidth=2;
+  for(let yy=75;yy<245;yy+=14){
+    ctx.beginPath(); ctx.moveTo(90,yy); ctx.lineTo(75,yy+10); ctx.stroke();
+  }
+
+  const eq=430;
+  const scale=850;
+  const massX=eq+x*scale;
+
+  // equilibrium
+  ctx.setLineDash([6,6]);
+  ctx.strokeStyle="#2563eb";
+  ctx.beginPath(); ctx.moveTo(eq,75); ctx.lineTo(eq,245); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // spring
+  ctx.strokeStyle="#475569";
+  ctx.lineWidth=3;
+  drawSpring(95,massX-35,150);
+
+  // mass
+  ctx.fillStyle="#64748b";
+  ctx.strokeStyle="#334155";
+  ctx.lineWidth=2;
+  ctx.beginPath();
+  ctx.roundRect(massX-35,115,70,70,10);
+  ctx.fill(); ctx.stroke();
+
+  ctx.fillStyle="white";
+  ctx.font="bold 15px Arial";
+  ctx.textAlign="center";
+  ctx.fillText("m",massX,157);
+
+  // labels
+  ctx.fillStyle="#1f2937";
+  ctx.font="14px Arial";
+  ctx.fillText("Vị trí cân bằng",eq,55);
+  ctx.fillText("x = "+x.toFixed(3)+" m",massX,205);
+
+  xOut.textContent=x.toFixed(3)+" m";
+  vOut.textContent=v.toFixed(3)+" m/s";
+  accOut.textContent=acc.toFixed(3)+" m/s²";
+}
+
+function loop(now){
+  const dt=Math.min((now-last)/1000,0.04);
+  last=now;
+  if(running) t+=dt;
+  draw();
+  requestAnimationFrame(loop);
+}
+
+document.getElementById('start').onclick=()=>running=true;
+document.getElementById('pause').onclick=()=>running=false;
+document.getElementById('reset').onclick=()=>{running=false;t=0;draw();};
+
+[mSlider,kSlider,aSlider].forEach(el=>el.addEventListener('input',()=>{updateLabels();draw();}));
+
+updateLabels();
+draw();
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
